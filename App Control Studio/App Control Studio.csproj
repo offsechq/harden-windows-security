@@ -323,7 +323,7 @@
 
 	<!-- Exclude the following files and folders from compilation, build, search, solution explorer etc. -->
 	<ItemGroup>
-		<Content Remove="Assets\Square44x44Logo.png" />
+
 		<Compile Remove="ReleaseNotes.txt" />
 		<Content Remove="ReleaseNotes.txt" />
 		<None Remove="ReleaseNotes.txt" />
