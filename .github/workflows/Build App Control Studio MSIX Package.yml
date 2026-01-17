@@ -563,7 +563,7 @@ jobs:
 
               # Create a self-signed certificate for signing
               # Subject must match the Publisher in Package.appxmanifest
-              $CertSubject = 'CN=C62E63B6-6EF1-4F86-B80F-41A725BD0189'
+              $CertSubject = $PackagePublisher
               $Cert = New-SelfSignedCertificate -Type Custom -Subject $CertSubject `
                   -KeyUsage DigitalSignature `
                   -FriendlyName 'OFFSECHQ Code Signing' `
@@ -618,7 +618,7 @@ jobs:
 
               # Sign X64 MSIX
               Write-Host -Object "Signing X64 MSIX: $FinalMSIXX64Path" -ForegroundColor Magenta
-              . $SignToolPath sign /fd SHA256 /sha1 $Cert.Thumbprint /td SHA256 /tr "http://timestamp.digicert.com" $FinalMSIXX64Path
+              . $SignToolPath sign /fd $PackageHashAlgo /sha1 $Cert.Thumbprint /td $PackageHashAlgo /tr "http://timestamp.digicert.com" $FinalMSIXX64Path
               if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("SignTool failed signing the X64 MSIX. Exit Code: $LASTEXITCODE") }
               #endregion
 
@@ -631,7 +631,7 @@ jobs:
 
                   # Sign ARM64 MSIX
                   Write-Host -Object "Signing ARM64 MSIX: $FinalMSIXARM64Path" -ForegroundColor Magenta
-                  . $SignToolPath sign /fd SHA256 /sha1 $Cert.Thumbprint /td SHA256 /tr "http://timestamp.digicert.com" $FinalMSIXARM64Path
+                  . $SignToolPath sign /fd $PackageHashAlgo /sha1 $Cert.Thumbprint /td $PackageHashAlgo /tr "http://timestamp.digicert.com" $FinalMSIXARM64Path
                   if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("SignTool failed signing the ARM64 MSIX. Exit Code: $LASTEXITCODE") }
               }
               #endregion
@@ -752,7 +752,7 @@ jobs:
               Write-Host -Object "Certificate exported to: $CertExportPath" -ForegroundColor Green
 
               # Sign the MSIX Bundle with the self-signed certificate
-              . $SignToolPath sign /fd SHA256 /sha1 $Cert.Thumbprint /td SHA256 /tr "http://timestamp.digicert.com" $MSIXBundle
+              . $SignToolPath sign /fd $PackageHashAlgo /sha1 $Cert.Thumbprint /td $PackageHashAlgo /tr "http://timestamp.digicert.com" $MSIXBundle
 
               if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("SignTool failed signing the MSIXBundle. Exit Code: $LASTEXITCODE") }
 
