@@ -83,7 +83,7 @@ jobs:
           PARTNERCENTER_CLIENTID: ${{ secrets.PARTNERCENTER_CLIENTID }}
           PARTNERCENTER_CLIENTSECRET: ${{ secrets.PARTNERCENTER_CLIENTSECRET }}
           PARTNERCENTER_TOKENENDPOINT: ${{ secrets.PARTNERCENTER_TOKENENDPOINT }}
-        working-directory: "./AppControl Manager" # Setting up working directory to ensure dotnet build will see the global.json file in the "AppControl Manager" sub-directory
+        working-directory: "./App Control Studio" # Setting up working directory to ensure dotnet build will see the global.json file in the "App Control Studio" sub-directory
         run: |
           # Requires -Version 5.1
           # Requires -RunAsAdministrator
@@ -142,7 +142,7 @@ jobs:
                   [System.String]$RepoUrl = "https://github.com/OFFSECHQ/$RepoName/archive/refs/heads/$BranchName.zip"
                   [System.String]$ZipPath = [System.IO.Path]::Combine($env:TEMP, "$RepoName.zip")
                   [System.String]$InitialWorkingDirectory = $PWD.Path
-                  $script:AppControlManagerDirectory = [System.IO.Path]::Combine($InitialWorkingDirectory, "$RepoName-$BranchName", 'AppControl Manager')
+                  $script:AppControlManagerDirectory = [System.IO.Path]::Combine($InitialWorkingDirectory, "$RepoName-$BranchName", 'App Control Studio')
 
                   if (Test-Path -Path $script:AppControlManagerDirectory -PathType Container) {
                       Remove-Item -Path $script:AppControlManagerDirectory -Recurse -Force
@@ -441,7 +441,7 @@ jobs:
 
               #region XML Modifications
 
-              [string]$CsProjFilePath = (Resolve-Path -Path '.\AppControl Manager.csproj').Path
+              [string]$CsProjFilePath = (Resolve-Path -Path '.\App Control Studio.csproj').Path
               [string]$AppxManifestFilePath = (Resolve-Path -Path '.\Package.appxmanifest').Path
 
               # Adjust the Digest Algorithm based on the package source
@@ -491,12 +491,12 @@ jobs:
               Copy-Item -Path '.\eXclude\ComManager\x64\Release\ComManager.exe' -Destination '.\CppInterop\ComManager.exe' -Force
 
               # Generate for X64 architecture
-              dotnet clean 'AppControl Manager.csproj' --configuration Release
-              dotnet build 'AppControl Manager.csproj' --configuration Release --verbosity minimal /p:Platform=x64 /p:RuntimeIdentifier=win-x64
+              dotnet clean 'App Control Studio.csproj' --configuration Release
+              dotnet build 'App Control Studio.csproj' --configuration Release --verbosity minimal /p:Platform=x64 /p:RuntimeIdentifier=win-x64
 
               if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("Failed building x64 AppControl Manager project. Exit Code: $LASTEXITCODE") }
 
-              dotnet msbuild 'AppControl Manager.csproj' /t:Publish /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:AppxPackageDir="MSIXOutputX64\" /p:GenerateAppxPackageOnBuild=true /p:Platform=x64 -v:minimal /p:MsPdbCmfExeFullpath=$mspdbcmfPath -bl:X64MSBuildLog.binlog
+              dotnet msbuild 'App Control Studio.csproj' /t:Publish /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:AppxPackageDir="MSIXOutputX64\" /p:GenerateAppxPackageOnBuild=true /p:Platform=x64 -v:minimal /p:MsPdbCmfExeFullpath=$mspdbcmfPath -bl:X64MSBuildLog.binlog
 
               if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("Failed packaging x64 AppControl Manager project. Exit Code: $LASTEXITCODE") }
 
@@ -508,12 +508,12 @@ jobs:
                   Copy-Item -Path '.\eXclude\ComManager\ARM64\Release\ComManager.exe' -Destination '.\CppInterop\ComManager.exe' -Force
 
                   # Generate for ARM64 architecture
-                  dotnet clean 'AppControl Manager.csproj' --configuration Release
-                  dotnet build 'AppControl Manager.csproj' --configuration Release --verbosity minimal /p:Platform=ARM64 /p:RuntimeIdentifier=win-arm64
+                  dotnet clean 'App Control Studio.csproj' --configuration Release
+                  dotnet build 'App Control Studio.csproj' --configuration Release --verbosity minimal /p:Platform=ARM64 /p:RuntimeIdentifier=win-arm64
 
                   if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("Failed building ARM64 AppControl Manager project. Exit Code: $LASTEXITCODE") }
 
-                  dotnet msbuild 'AppControl Manager.csproj' /t:Publish /p:Configuration=Release /p:RuntimeIdentifier=win-arm64 /p:AppxPackageDir="MSIXOutputARM64\" /p:GenerateAppxPackageOnBuild=true /p:Platform=ARM64 -v:minimal /p:MsPdbCmfExeFullpath=$mspdbcmfPath -bl:ARM64MSBuildLog.binlog
+                  dotnet msbuild 'App Control Studio.csproj' /t:Publish /p:Configuration=Release /p:RuntimeIdentifier=win-arm64 /p:AppxPackageDir="MSIXOutputARM64\" /p:GenerateAppxPackageOnBuild=true /p:Platform=ARM64 -v:minimal /p:MsPdbCmfExeFullpath=$mspdbcmfPath -bl:ARM64MSBuildLog.binlog
 
                   if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("Failed packaging ARM64 AppControl Manager project. Exit Code: $LASTEXITCODE") }
               }
@@ -557,29 +557,29 @@ jobs:
               }
 
               #region Finding X64 outputs
-              [System.String]$FinalMSIXX64Path = Get-MSIXFile -BasePath ([System.IO.Path]::Combine($PWD.Path, 'MSIXOutputX64')) -FolderPattern 'AppControl Manager_\d+\.\d+\.\d+\.\d+_x64_Test' -FileNamePattern 'AppControl Manager_\d+\.\d+\.\d+\.\d+_x64\.msix' -ErrorMessageFolder 'Could not find the directory for X64 MSIX file' -ErrorMessageFile 'Could not find the X64 MSIX file'
+              [System.String]$FinalMSIXX64Path = Get-MSIXFile -BasePath ([System.IO.Path]::Combine($PWD.Path, 'MSIXOutputX64')) -FolderPattern 'App Control Studio_\d+\.\d+\.\d+\.\d+_x64_Test' -FileNamePattern 'App Control Studio_\d+\.\d+\.\d+\.\d+_x64\.msix' -ErrorMessageFolder 'Could not find the directory for X64 MSIX file' -ErrorMessageFile 'Could not find the X64 MSIX file'
               [System.String]$FinalMSIXX64Name = [System.IO.Path]::GetFileName($FinalMSIXX64Path)
-              [System.String]$FinalMSIXX64SymbolPath = Get-MSIXFile -BasePath ([System.IO.Path]::Combine($PWD.Path, 'MSIXOutputX64')) -FolderPattern 'AppControl Manager_\d+\.\d+\.\d+\.\d+_x64_Test' -FileNamePattern 'AppControl Manager_\d+\.\d+\.\d+\.\d+_x64\.appxsym' -ErrorMessageFolder 'Could not find the directory for X64 symbol file' -ErrorMessageFile 'Could not find the X64 symbol file'
+              [System.String]$FinalMSIXX64SymbolPath = Get-MSIXFile -BasePath ([System.IO.Path]::Combine($PWD.Path, 'MSIXOutputX64')) -FolderPattern 'App Control Studio_\d+\.\d+\.\d+\.\d+_x64_Test' -FileNamePattern 'App Control Studio_\d+\.\d+\.\d+\.\d+_x64\.appxsym' -ErrorMessageFolder 'Could not find the directory for X64 symbol file' -ErrorMessageFile 'Could not find the X64 symbol file'
               [System.String]$FinalMSIXX64SymbolName = [System.IO.Path]::GetFileName($FinalMSIXX64SymbolPath)
               #endregion
 
               if (!$X64ONLY) {
 
                   #region Finding ARM64 outputs
-                  [System.String]$FinalMSIXARM64Path = Get-MSIXFile -BasePath ([System.IO.Path]::Combine($PWD.Path, 'MSIXOutputARM64')) -FolderPattern 'AppControl Manager_\d+\.\d+\.\d+\.\d+_arm64_Test' -FileNamePattern 'AppControl Manager_\d+\.\d+\.\d+\.\d+_arm64\.msix' -ErrorMessageFolder 'Could not find the directory for ARM64 MSIX file' -ErrorMessageFile 'Could not find the ARM64 MSIX file'
+                  [System.String]$FinalMSIXARM64Path = Get-MSIXFile -BasePath ([System.IO.Path]::Combine($PWD.Path, 'MSIXOutputARM64')) -FolderPattern 'App Control Studio_\d+\.\d+\.\d+\.\d+_arm64_Test' -FileNamePattern 'App Control Studio_\d+\.\d+\.\d+\.\d+_arm64\.msix' -ErrorMessageFolder 'Could not find the directory for ARM64 MSIX file' -ErrorMessageFile 'Could not find the ARM64 MSIX file'
                   [System.String]$FinalMSIXARM64Name = [System.IO.Path]::GetFileName($FinalMSIXARM64Path)
-                  [System.String]$FinalMSIXARM64SymbolPath = Get-MSIXFile -BasePath ([System.IO.Path]::Combine($PWD.Path, 'MSIXOutputARM64')) -FolderPattern 'AppControl Manager_\d+\.\d+\.\d+\.\d+_arm64_Test' -FileNamePattern 'AppControl Manager_\d+\.\d+\.\d+\.\d+_arm64\.appxsym' -ErrorMessageFolder 'Could not find the directory for ARM64 symbol file' -ErrorMessageFile 'Could not find the ARM64 symbol file'
+                  [System.String]$FinalMSIXARM64SymbolPath = Get-MSIXFile -BasePath ([System.IO.Path]::Combine($PWD.Path, 'MSIXOutputARM64')) -FolderPattern 'App Control Studio_\d+\.\d+\.\d+\.\d+_arm64_Test' -FileNamePattern 'App Control Studio_\d+\.\d+\.\d+\.\d+_arm64\.appxsym' -ErrorMessageFolder 'Could not find the directory for ARM64 symbol file' -ErrorMessageFile 'Could not find the ARM64 symbol file'
                   [System.String]$FinalMSIXARM64SymbolName = [System.IO.Path]::GetFileName($FinalMSIXARM64SymbolPath)
                   #endregion
 
               }
 
               #region Detect and Validate File Versions
-              [System.Text.RegularExpressions.Regex]$versionRegexX64 = [System.Text.RegularExpressions.Regex]::New('AppControl Manager_(\d+\.\d+\.\d+\.\d+)_x64\.msix')
+              [System.Text.RegularExpressions.Regex]$versionRegexX64 = [System.Text.RegularExpressions.Regex]::New('App Control Studio_(\d+\.\d+\.\d+\.\d+)_x64\.msix')
 
               if (!$X64ONLY) {
 
-                  [System.Text.RegularExpressions.Regex]$versionRegexARM64 = [System.Text.RegularExpressions.Regex]::New('AppControl Manager_(\d+\.\d+\.\d+\.\d+)_arm64\.msix')
+                  [System.Text.RegularExpressions.Regex]$versionRegexARM64 = [System.Text.RegularExpressions.Regex]::New('App Control Studio_(\d+\.\d+\.\d+\.\d+)_arm64\.msix')
               }
 
               [System.Text.RegularExpressions.Match]$MatchX64 = $versionRegexX64.Match($FinalMSIXX64Name)
@@ -615,7 +615,7 @@ jobs:
               }
 
               # Craft the file name for the MSIX Bundle file
-              [System.String]$FinalBundleFileName = "AppControl Manager_$versionX64.msixbundle"
+              [System.String]$FinalBundleFileName = "App Control Studio_$versionX64.msixbundle"
               #endregion
 
               # Creating the directory where the MSIX packages will be copied to

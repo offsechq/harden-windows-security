@@ -4,12 +4,12 @@
     <!-- Import the build props from the AppControl Manager's directory -->
     <PropertyGroup>
         <!-- https://learn.microsoft.com/visualstudio/msbuild/customize-by-directory -->
-        <DirectoryBuildPropsPath>..\AppControl Manager\Directory.Build.props</DirectoryBuildPropsPath>
+        <DirectoryBuildPropsPath>..\App Control Studio\Directory.Build.props</DirectoryBuildPropsPath>
     </PropertyGroup>
 
     <!-- Imports the Common Core -->
     <Import Project="$(DirectoryBuildPropsPath)" />
-    <Import Project="..\AppControl Manager\eXclude\CommonCore\CommonCore.projitems" Label="Shared" />
+    <Import Project="..\App Control Studio\eXclude\CommonCore\CommonCore.projitems" Label="Shared" />
 
 	<!-- Global -->
 	<PropertyGroup>
@@ -170,46 +170,46 @@
 
 	<!-- Code reuse from other projects -->
 	<ItemGroup>
-		<Compile Include="..\AppControl Manager\App.xaml.cs" Link="App.xaml.cs" />
-		<Compile Include="..\AppControl Manager\CustomUIElements\AnimatedCancellableButton.cs" Link="CustomUIElements\AnimatedCancellableButton.cs" />
-		<Compile Include="..\AppControl Manager\CustomUIElements\ButtonV2.cs" Link="CustomUIElements\ButtonV2.cs" />
-		<Compile Include="..\AppControl Manager\CustomUIElements\ColorRadialGaugeV2.cs" Link="CustomUIElements\ColorRadialGaugeV2.cs" />
-		<Compile Include="..\AppControl Manager\CustomUIElements\ContentDialogV2.cs" Link="CustomUIElements\ContentDialogV2.cs" />
-		<Compile Include="..\AppControl Manager\CustomUIElements\InfoBarV2.cs" Link="CustomUIElements\InfoBarV2.cs" />
-		<Compile Include="..\AppControl Manager\CustomUIElements\ListViewV2.cs" Link="CustomUIElements\ListViewV2.cs" />
-		<Compile Include="..\AppControl Manager\CustomUIElements\MenuFlyoutV2.cs" Link="CustomUIElements\MenuFlyoutV2.cs" />
-		<Compile Include="..\AppControl Manager\CustomUIElements\SettingsCardV2.cs" Link="CustomUIElements\SettingsCardV2.cs" />
-		<Compile Include="..\AppControl Manager\CustomUIElements\SettingsCardV3.cs" Link="CustomUIElements\SettingsCardV3.cs" />
-		<Compile Include="..\AppControl Manager\CustomUIElements\StickyHeaderBehaviorV2.cs" Link="CustomUIElements\StickyHeaderBehaviorV2.cs" />
-		<Compile Include="..\AppControl Manager\CustomUIElements\AppWindowBorderCustomization.cs" Link="CustomUIElements\AppWindowBorderCustomization.cs" />
-		<Compile Include="..\AppControl Manager\IncrementalCollection\GenericIncrementalCollection.cs" Link="IncrementalCollection\GenericIncrementalCollection.cs" />
-		<Compile Include="..\AppControl Manager\IncrementalCollection\IncrementalCollection.cs" Link="IncrementalCollection\IncrementalCollection.cs" />
-		<Compile Include="..\AppControl Manager\MainWindow.xaml.cs" Link="MainWindow.xaml.cs" />
-		<Compile Include="..\AppControl Manager\Others\AppUpdate.cs" Link="Others\AppUpdate.cs" />
-		<Compile Include="..\AppControl Manager\Others\EventLogUtility.cs" Link="Others\EventLogUtility.cs" />
-		<Compile Include="..\AppControl Manager\Others\ListViewHelper-Shared.cs" Link="Others\ListViewHelper-Shared.cs" />
-		<Compile Include="..\AppControl Manager\Others\UniqueStringObservableCollection.cs" Link="Others\UniqueStringObservableCollection.cs" />
-		<Compile Include="..\AppControl Manager\Others\UpdateAvailableEventArgs.cs" Link="Others\UpdateAvailableEventArgs.cs" />
-		<Compile Include="..\AppControl Manager\Others\UpdateCheckResponse.cs" Link="Others\UpdateCheckResponse.cs" />
-		<Compile Include="..\AppControl Manager\Others\AnimatedCancellableButtonInitializer.cs" Link="Others\AnimatedCancellableButtonInitializer.cs" />
-		<Compile Include="..\AppControl Manager\Pages\GitHubDocumentation.xaml.cs" Link="Pages\GitHubDocumentation.xaml.cs" />
-		<Compile Include="..\AppControl Manager\Pages\Home.xaml.cs" Link="Pages\Home.xaml.cs" />
-		<Compile Include="..\AppControl Manager\Pages\Logs.xaml.cs" Link="Pages\Logs.xaml.cs" />
-		<Compile Include="..\AppControl Manager\Pages\Settings.xaml.cs" Link="Pages\Settings.xaml.cs" />
-		<Compile Include="..\AppControl Manager\Pages\UpdatePage.xaml.cs" Link="Pages\UpdatePage.xaml.cs" />
-		<Compile Include="..\AppControl Manager\ViewModels\HomeVM.cs" Link="ViewModels\HomeVM.cs" />
-		<Compile Include="..\AppControl Manager\ViewModels\LogsVM.cs" Link="ViewModels\LogsVM.cs" />
-		<Compile Include="..\AppControl Manager\ViewModels\MainWindowVM-Shared.cs" Link="ViewModels\MainWindowVM-Shared.cs" />
-		<Compile Include="..\AppControl Manager\ViewModels\SettingsVM.cs" Link="ViewModels\SettingsVM.cs" />
-		<Compile Include="..\AppControl Manager\ViewModels\UpdateVM.cs" Link="ViewModels\UpdateVM.cs" />
-		<Compile Include="..\AppControl Manager\ViewModels\ViewModelBase.cs" Link="ViewModels\ViewModelBase.cs" />
-		<Compile Include="..\AppControl Manager\WindowComponents\Crumb.cs" Link="WindowComponents\Crumb.cs" />
-		<Compile Include="..\AppControl Manager\WindowComponents\IAnimatedIconsManager.cs" Link="WindowComponents\IAnimatedIconsManager.cs" />
-		<Compile Include="..\AppControl Manager\WindowComponents\NavigationService.cs" Link="WindowComponents\NavigationService.cs" />
-		<Compile Include="..\AppControl Manager\WindowComponents\PageTitleMap.cs" Link="WindowComponents\PageTitleMap.cs" />
-		<Compile Include="..\AppControl Manager\Others\GetAppsList.cs" Link="Others\GetAppsList.cs" />
-		<Compile Include="..\AppControl Manager\ViewModels\IntuneDeploymentDetailsVM.cs" Link="ViewModels\IntuneDeploymentDetailsVM.cs" />
-		<Compile Include="..\AppControl Manager\Pages\IntuneDeploymentDetails.xaml.cs" Link="Pages\IntuneDeploymentDetails.xaml.cs" />
+		<Compile Include="..\App Control Studio\App.xaml.cs" Link="App.xaml.cs" />
+		<Compile Include="..\App Control Studio\CustomUIElements\AnimatedCancellableButton.cs" Link="CustomUIElements\AnimatedCancellableButton.cs" />
+		<Compile Include="..\App Control Studio\CustomUIElements\ButtonV2.cs" Link="CustomUIElements\ButtonV2.cs" />
+		<Compile Include="..\App Control Studio\CustomUIElements\ColorRadialGaugeV2.cs" Link="CustomUIElements\ColorRadialGaugeV2.cs" />
+		<Compile Include="..\App Control Studio\CustomUIElements\ContentDialogV2.cs" Link="CustomUIElements\ContentDialogV2.cs" />
+		<Compile Include="..\App Control Studio\CustomUIElements\InfoBarV2.cs" Link="CustomUIElements\InfoBarV2.cs" />
+		<Compile Include="..\App Control Studio\CustomUIElements\ListViewV2.cs" Link="CustomUIElements\ListViewV2.cs" />
+		<Compile Include="..\App Control Studio\CustomUIElements\MenuFlyoutV2.cs" Link="CustomUIElements\MenuFlyoutV2.cs" />
+		<Compile Include="..\App Control Studio\CustomUIElements\SettingsCardV2.cs" Link="CustomUIElements\SettingsCardV2.cs" />
+		<Compile Include="..\App Control Studio\CustomUIElements\SettingsCardV3.cs" Link="CustomUIElements\SettingsCardV3.cs" />
+		<Compile Include="..\App Control Studio\CustomUIElements\StickyHeaderBehaviorV2.cs" Link="CustomUIElements\StickyHeaderBehaviorV2.cs" />
+		<Compile Include="..\App Control Studio\CustomUIElements\AppWindowBorderCustomization.cs" Link="CustomUIElements\AppWindowBorderCustomization.cs" />
+		<Compile Include="..\App Control Studio\IncrementalCollection\GenericIncrementalCollection.cs" Link="IncrementalCollection\GenericIncrementalCollection.cs" />
+		<Compile Include="..\App Control Studio\IncrementalCollection\IncrementalCollection.cs" Link="IncrementalCollection\IncrementalCollection.cs" />
+		<Compile Include="..\App Control Studio\MainWindow.xaml.cs" Link="MainWindow.xaml.cs" />
+		<Compile Include="..\App Control Studio\Others\AppUpdate.cs" Link="Others\AppUpdate.cs" />
+		<Compile Include="..\App Control Studio\Others\EventLogUtility.cs" Link="Others\EventLogUtility.cs" />
+		<Compile Include="..\App Control Studio\Others\ListViewHelper-Shared.cs" Link="Others\ListViewHelper-Shared.cs" />
+		<Compile Include="..\App Control Studio\Others\UniqueStringObservableCollection.cs" Link="Others\UniqueStringObservableCollection.cs" />
+		<Compile Include="..\App Control Studio\Others\UpdateAvailableEventArgs.cs" Link="Others\UpdateAvailableEventArgs.cs" />
+		<Compile Include="..\App Control Studio\Others\UpdateCheckResponse.cs" Link="Others\UpdateCheckResponse.cs" />
+		<Compile Include="..\App Control Studio\Others\AnimatedCancellableButtonInitializer.cs" Link="Others\AnimatedCancellableButtonInitializer.cs" />
+		<Compile Include="..\App Control Studio\Pages\GitHubDocumentation.xaml.cs" Link="Pages\GitHubDocumentation.xaml.cs" />
+		<Compile Include="..\App Control Studio\Pages\Home.xaml.cs" Link="Pages\Home.xaml.cs" />
+		<Compile Include="..\App Control Studio\Pages\Logs.xaml.cs" Link="Pages\Logs.xaml.cs" />
+		<Compile Include="..\App Control Studio\Pages\Settings.xaml.cs" Link="Pages\Settings.xaml.cs" />
+		<Compile Include="..\App Control Studio\Pages\UpdatePage.xaml.cs" Link="Pages\UpdatePage.xaml.cs" />
+		<Compile Include="..\App Control Studio\ViewModels\HomeVM.cs" Link="ViewModels\HomeVM.cs" />
+		<Compile Include="..\App Control Studio\ViewModels\LogsVM.cs" Link="ViewModels\LogsVM.cs" />
+		<Compile Include="..\App Control Studio\ViewModels\MainWindowVM-Shared.cs" Link="ViewModels\MainWindowVM-Shared.cs" />
+		<Compile Include="..\App Control Studio\ViewModels\SettingsVM.cs" Link="ViewModels\SettingsVM.cs" />
+		<Compile Include="..\App Control Studio\ViewModels\UpdateVM.cs" Link="ViewModels\UpdateVM.cs" />
+		<Compile Include="..\App Control Studio\ViewModels\ViewModelBase.cs" Link="ViewModels\ViewModelBase.cs" />
+		<Compile Include="..\App Control Studio\WindowComponents\Crumb.cs" Link="WindowComponents\Crumb.cs" />
+		<Compile Include="..\App Control Studio\WindowComponents\IAnimatedIconsManager.cs" Link="WindowComponents\IAnimatedIconsManager.cs" />
+		<Compile Include="..\App Control Studio\WindowComponents\NavigationService.cs" Link="WindowComponents\NavigationService.cs" />
+		<Compile Include="..\App Control Studio\WindowComponents\PageTitleMap.cs" Link="WindowComponents\PageTitleMap.cs" />
+		<Compile Include="..\App Control Studio\Others\GetAppsList.cs" Link="Others\GetAppsList.cs" />
+		<Compile Include="..\App Control Studio\ViewModels\IntuneDeploymentDetailsVM.cs" Link="ViewModels\IntuneDeploymentDetailsVM.cs" />
+		<Compile Include="..\App Control Studio\Pages\IntuneDeploymentDetails.xaml.cs" Link="Pages\IntuneDeploymentDetails.xaml.cs" />
 	</ItemGroup>
 
 	<!-- NuGet packages
@@ -267,12 +267,12 @@
 
 	<ItemGroup Condition="'$(Platform)' == 'x64' OR '$(RuntimeIdentifier)' == 'win-x64'">
 		<DirectPInvoke Include="rust_interop" />
-		<NativeLibrary Include="../AppControl Manager/eXclude/Rust Interop Library/target/x86_64-pc-windows-msvc/release/rust_interop.lib" />
+		<NativeLibrary Include="../App Control Studio/eXclude/Rust Interop Library/target/x86_64-pc-windows-msvc/release/rust_interop.lib" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(Platform)' == 'arm64' OR '$(RuntimeIdentifier)' == 'win-arm64'">
 		<DirectPInvoke Include="rust_interop" />
-		<NativeLibrary Include="../AppControl Manager/eXclude/Rust Interop Library/target/aarch64-pc-windows-msvc/release/rust_interop.lib" />
+		<NativeLibrary Include="../App Control Studio/eXclude/Rust Interop Library/target/aarch64-pc-windows-msvc/release/rust_interop.lib" />
 	</ItemGroup>
 
 	<PropertyGroup>
