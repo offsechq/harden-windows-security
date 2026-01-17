@@ -27,6 +27,8 @@ jobs:
       ARM64Symbol_NAME: ${{ steps.main_buildOp.outputs.ARM64Symbol_NAME }}
       SBOM_PATH: ${{ steps.main_buildOp.outputs.SBOM_PATH }}
       SBOM_NAME: ${{ steps.main_buildOp.outputs.SBOM_NAME }}
+      CERT_PATH: ${{ steps.main_buildOp.outputs.CERT_PATH }}
+      CERT_NAME: ${{ steps.main_buildOp.outputs.CERT_NAME }}
 
     permissions:
       contents: write # Required for adding files to the GitHub draft release
@@ -559,6 +561,69 @@ jobs:
 
               if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("MakeAppx failed creating the MSIXBundle. Exit Code: $LASTEXITCODE") }
 
+              #region Certificate Creation and Signing
+
+              # Create a self-signed certificate for signing
+              # Subject must match the Publisher in Package.appxmanifest
+              $CertSubject = 'CN=C62E63B6-6EF1-4F86-B80F-41A725BD0189'
+              $Cert = New-SelfSignedCertificate -Type Custom -Subject $CertSubject `
+                  -KeyUsage DigitalSignature `
+                  -FriendlyName 'OFFSECHQ Code Signing' `
+                  -CertStoreLocation 'Cert:\CurrentUser\My' `
+                  -TextExtension @('2.5.29.37={text}1.3.6.1.5.5.7.3.3', '2.5.29.19={text}')
+
+              Write-Host -Object "Certificate created with thumbprint: $($Cert.Thumbprint)" -ForegroundColor Green
+
+              # Export the public certificate for users to install
+              $CertExportPath = [System.IO.Path]::Combine($MSIXBundleOutput, 'OFFSECHQ_CodeSigning.cer')
+              Export-Certificate -Cert $Cert -FilePath $CertExportPath -Type CERT
+              Write-Host -Object "Certificate exported to: $CertExportPath" -ForegroundColor Green
+
+              # Find SignTool.exe (reuses same logic as MakeAppx)
+              function Get-SignToolPath {
+                  [System.String]$BasePath = 'C:\Program Files (x86)\Windows Kits\10\bin'
+                  [System.String[]]$VersionDirs = [System.IO.Directory]::GetDirectories($BasePath)
+                  [System.Version]$HighestVersion = [System.Version]::New('0.0.0.0')
+                  [System.String]$HighestVersionFolder = $null
+
+                  foreach ($Dir in $VersionDirs) {
+                      [System.String]$FolderName = [System.IO.Path]::GetFileName($Dir)
+                      [System.Version]$CurrentVersion = $null
+                      if ([System.Version]::TryParse($FolderName, [ref] $CurrentVersion)) {
+                          if ($CurrentVersion.CompareTo($HighestVersion) -gt 0) {
+                              $HighestVersion = $CurrentVersion
+                              $HighestVersionFolder = $FolderName
+                          }
+                      }
+                  }
+
+                  if (!$HighestVersionFolder) {
+                      throw [System.IO.DirectoryNotFoundException]::New("No valid version directories found in $BasePath")
+                  }
+
+                  [string]$CPUArch = @{AMD64 = 'x64'; ARM64 = 'arm64' }[$Env:PROCESSOR_ARCHITECTURE]
+                  [System.String]$SignToolPath = [System.IO.Path]::Combine($BasePath, $HighestVersionFolder, $CPUArch, 'signtool.exe')
+
+                  return $SignToolPath
+              }
+
+              [System.String]$SignToolPath = Get-SignToolPath
+
+              if ([System.String]::IsNullOrWhiteSpace($SignToolPath) -or -not (Test-Path $SignToolPath)) {
+                  throw [System.IO.FileNotFoundException]::New('Could not find signtool.exe')
+              }
+
+              Write-Host -Object "Using SignTool at: $SignToolPath" -ForegroundColor Green
+
+              # Sign the MSIX Bundle with the self-signed certificate
+              . $SignToolPath sign /fd SHA256 /sha1 $Cert.Thumbprint /td SHA256 /tr "http://timestamp.digicert.com" $MSIXBundle
+
+              if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("SignTool failed signing the MSIXBundle. Exit Code: $LASTEXITCODE") }
+
+              Write-Host -Object "Successfully signed: $MSIXBundle" -ForegroundColor Green
+
+              #endregion
+
               #Endregion
 
               Write-Host -Object "X64 MSIX File Path: $FinalMSIXX64Path" -ForegroundColor Green
@@ -597,6 +662,10 @@ jobs:
                   # Saving the details of the ARM64 symbol file
                   Add-Content -Path ($env:GITHUB_ENV, $env:GITHUB_OUTPUT) -Value "ARM64Symbol_PATH=$FinalMSIXARM64SymbolPath"
                   Add-Content -Path ($env:GITHUB_ENV, $env:GITHUB_OUTPUT) -Value "ARM64Symbol_NAME=$FinalMSIXARM64SymbolName"
+
+                  # Saving the details of the code signing certificate
+                  Add-Content -Path ($env:GITHUB_ENV, $env:GITHUB_OUTPUT) -Value "CERT_PATH=$CertExportPath"
+                  Add-Content -Path ($env:GITHUB_ENV, $env:GITHUB_OUTPUT) -Value "CERT_NAME=OFFSECHQ_CodeSigning.cer"
 
                   # https://github.com/microsoft/sbom-tool
                   # Generating SBOM
@@ -666,6 +735,7 @@ jobs:
               @{ Path = "${{ env.X64Symbol_PATH }}"; Name = "${{ env.X64Symbol_NAME }}" }
               @{ Path = "${{ env.ARM64Symbol_PATH }}"; Name = "${{ env.ARM64Symbol_NAME }}" }
               @{ Path = "${{ env.SBOM_PATH }}"; Name = "${{ env.SBOM_NAME }}" }
+              @{ Path = "${{ env.CERT_PATH }}"; Name = "${{ env.CERT_NAME }}" }
           )
           [string]$DraftReleaseId = $env:DRAFT_RELEASE_ID
           [string]$Repo = "${{ github.repository }}"
@@ -728,6 +798,14 @@ jobs:
           compression-level: 0
           name: ${{ env.SBOM_NAME }}
           path: ${{ env.SBOM_PATH }}
+
+      - name: Uploading Artifact 7
+        uses: actions/upload-artifact@v6
+        with:
+          retention-days: 1
+          compression-level: 0
+          name: ${{ env.CERT_NAME }}
+          path: ${{ env.CERT_PATH }}
 
   # The Attestation runs right after build and no other job, especially 3rd party actions/steps etc. should run in between.
   attest:
