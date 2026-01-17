@@ -905,6 +905,7 @@ jobs:
           Copy-Item -Path "${{ env.MSIXBundle_PATH }}" -Destination $InstallKitDir
           Copy-Item -Path "${{ env.CERT_PATH }}" -Destination $InstallKitDir
           Copy-Item -Path "Install.ps1" -Destination $InstallKitDir
+          Copy-Item -Path "Install.cmd" -Destination $InstallKitDir
 
           $ZipName = "App.Control.Studio_Install_Kit_v${{ env.PACKAGE_VERSION }}.zip"
           $ZipPath = Join-Path $env:RUNNER_TEMP $ZipName
