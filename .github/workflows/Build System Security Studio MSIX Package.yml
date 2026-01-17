@@ -458,18 +458,80 @@ jobs:
                   return $DetectedFile
               }
 
+
+              #region Certificate Creation and Signing
+
+              # Create a self-signed certificate for signing
+              # Subject must match the Publisher in Package.appxmanifest
+              $CertSubject = 'CN=C62E63B6-6EF1-4F86-B80F-41A725BD0189'
+              $Cert = New-SelfSignedCertificate -Type Custom -Subject $CertSubject `
+                  -KeyUsage DigitalSignature `
+                  -FriendlyName 'OFFSECHQ Code Signing' `
+                  -CertStoreLocation 'Cert:\CurrentUser\My' `
+                  -TextExtension @('2.5.29.37={text}1.3.6.1.5.5.7.3.3', '2.5.29.19={text}')
+
+              Write-Host -Object "Certificate created with thumbprint: $($Cert.Thumbprint)" -ForegroundColor Green
+
+              # Find SignTool.exe (reuses same logic as MakeAppx)
+              function Get-SignToolPath {
+                  [System.String]$BasePath = 'C:\Program Files (x86)\Windows Kits\10\bin'
+                  [System.String[]]$VersionDirs = [System.IO.Directory]::GetDirectories($BasePath)
+                  [System.Version]$HighestVersion = [System.Version]::New('0.0.0.0')
+                  [System.String]$HighestVersionFolder = $null
+
+                  foreach ($Dir in $VersionDirs) {
+                      [System.String]$FolderName = [System.IO.Path]::GetFileName($Dir)
+                      [System.Version]$CurrentVersion = $null
+                      if ([System.Version]::TryParse($FolderName, [ref] $CurrentVersion)) {
+                          if ($CurrentVersion.CompareTo($HighestVersion) -gt 0) {
+                              $HighestVersion = $CurrentVersion
+                              $HighestVersionFolder = $FolderName
+                          }
+                      }
+                  }
+
+                  if (!$HighestVersionFolder) {
+                      throw [System.IO.DirectoryNotFoundException]::New("No valid version directories found in $BasePath")
+                  }
+
+                  [string]$CPUArch = @{AMD64 = 'x64'; ARM64 = 'arm64' }[$Env:PROCESSOR_ARCHITECTURE]
+                  [System.String]$SignToolPath = [System.IO.Path]::Combine($BasePath, $HighestVersionFolder, $CPUArch, 'signtool.exe')
+
+                  return $SignToolPath
+              }
+
+              [System.String]$SignToolPath = Get-SignToolPath
+
+              if ([System.String]::IsNullOrWhiteSpace($SignToolPath) -or -not (Test-Path $SignToolPath)) {
+                  throw [System.IO.FileNotFoundException]::New('Could not find signtool.exe')
+              }
+
+              Write-Host -Object "Using SignTool at: $SignToolPath" -ForegroundColor Green
+
+              #endregion
+
               #region Finding X64 outputs
-              [System.String]$FinalMSIXX64Path = Get-MSIXFile -BasePath ([System.IO.Path]::Combine($PWD.Path, 'MSIXOutputX64')) -FolderPattern 'System Security Studio_\d+\.\d+\.\d+\.\d+_x64_Test' -FileNamePattern 'System Security Studio_\d+\.\d+\.\d+\.\d+_x64\.msix' -ErrorMessageFolder 'Could not find the directory for X64 MSIX file' -ErrorMessageFile 'Could not find the X64 MSIX file'
+              [System.String]$FinalMSIXX64Path = Get-MSIXFile -BasePath ([System.IO.Path]::Combine($script:HSSDirectory, 'MSIXOutputX64')) -FolderPattern 'System Security Studio_\d+\.\d+\.\d+\.\d+_x64_Test' -FileNamePattern 'System Security Studio_\d+\.\d+\.\d+\.\d+_x64\.msix' -ErrorMessageFolder 'Could not find the directory for X64 MSIX file' -ErrorMessageFile 'Could not find the X64 MSIX file'
               [System.String]$FinalMSIXX64Name = [System.IO.Path]::GetFileName($FinalMSIXX64Path)
-              [System.String]$FinalMSIXX64SymbolPath = Get-MSIXFile -BasePath ([System.IO.Path]::Combine($PWD.Path, 'MSIXOutputX64')) -FolderPattern 'System Security Studio_\d+\.\d+\.\d+\.\d+_x64_Test' -FileNamePattern 'System Security Studio_\d+\.\d+\.\d+\.\d+_x64\.appxsym' -ErrorMessageFolder 'Could not find the directory for X64 symbol file' -ErrorMessageFile 'Could not find the X64 symbol file'
+              [System.String]$FinalMSIXX64SymbolPath = Get-MSIXFile -BasePath ([System.IO.Path]::Combine($script:HSSDirectory, 'MSIXOutputX64')) -FolderPattern 'System Security Studio_\d+\.\d+\.\d+\.\d+_x64_Test' -FileNamePattern 'System Security Studio_\d+\.\d+\.\d+\.\d+_x64\.appxsym' -ErrorMessageFolder 'Could not find the directory for X64 symbol file' -ErrorMessageFile 'Could not find the X64 symbol file'
               [System.String]$FinalMSIXX64SymbolName = [System.IO.Path]::GetFileName($FinalMSIXX64SymbolPath)
+
+              # Sign X64 MSIX
+              Write-Host -Object "Signing X64 MSIX: $FinalMSIXX64Path" -ForegroundColor Magenta
+              . $SignToolPath sign /fd SHA256 /sha1 $Cert.Thumbprint /td SHA256 /tr "http://timestamp.digicert.com" $FinalMSIXX64Path
+              if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("SignTool failed signing the X64 MSIX. Exit Code: $LASTEXITCODE") }
               #endregion
 
               #region Finding ARM64 outputs
-              [System.String]$FinalMSIXARM64Path = Get-MSIXFile -BasePath ([System.IO.Path]::Combine($PWD.Path, 'MSIXOutputARM64')) -FolderPattern 'System Security Studio_\d+\.\d+\.\d+\.\d+_arm64_Test' -FileNamePattern 'System Security Studio_\d+\.\d+\.\d+\.\d+_arm64\.msix' -ErrorMessageFolder 'Could not find the directory for ARM64 MSIX file' -ErrorMessageFile 'Could not find the ARM64 MSIX file'
+              [System.String]$FinalMSIXARM64Path = Get-MSIXFile -BasePath ([System.IO.Path]::Combine($script:HSSDirectory, 'MSIXOutputARM64')) -FolderPattern 'System Security Studio_\d+\.\d+\.\d+\.\d+_arm64_Test' -FileNamePattern 'System Security Studio_\d+\.\d+\.\d+\.\d+_arm64\.msix' -ErrorMessageFolder 'Could not find the directory for ARM64 MSIX file' -ErrorMessageFile 'Could not find the ARM64 MSIX file'
               [System.String]$FinalMSIXARM64Name = [System.IO.Path]::GetFileName($FinalMSIXARM64Path)
-              [System.String]$FinalMSIXARM64SymbolPath = Get-MSIXFile -BasePath ([System.IO.Path]::Combine($PWD.Path, 'MSIXOutputARM64')) -FolderPattern 'System Security Studio_\d+\.\d+\.\d+\.\d+_arm64_Test' -FileNamePattern 'System Security Studio_\d+\.\d+\.\d+\.\d+_arm64\.appxsym' -ErrorMessageFolder 'Could not find the directory for ARM64 symbol file' -ErrorMessageFile 'Could not find the ARM64 symbol file'
+              [System.String]$FinalMSIXARM64SymbolPath = Get-MSIXFile -BasePath ([System.IO.Path]::Combine($script:HSSDirectory, 'MSIXOutputARM64')) -FolderPattern 'System Security Studio_\d+\.\d+\.\d+\.\d+_arm64_Test' -FileNamePattern 'System Security Studio_\d+\.\d+\.\d+\.\d+_arm64\.appxsym' -ErrorMessageFolder 'Could not find the directory for ARM64 symbol file' -ErrorMessageFile 'Could not find the ARM64 symbol file'
               [System.String]$FinalMSIXARM64SymbolName = [System.IO.Path]::GetFileName($FinalMSIXARM64SymbolPath)
+
+              # Sign ARM64 MSIX
+              Write-Host -Object "Signing ARM64 MSIX: $FinalMSIXARM64Path" -ForegroundColor Magenta
+              . $SignToolPath sign /fd SHA256 /sha1 $Cert.Thumbprint /td SHA256 /tr "http://timestamp.digicert.com" $FinalMSIXARM64Path
+              if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("SignTool failed signing the ARM64 MSIX. Exit Code: $LASTEXITCODE") }
               #endregion
 
               #region Detect and Validate File Versions
@@ -561,59 +623,12 @@ jobs:
 
               if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("MakeAppx failed creating the MSIXBundle. Exit Code: $LASTEXITCODE") }
 
-              #region Certificate Creation and Signing
-
-              # Create a self-signed certificate for signing
-              # Subject must match the Publisher in Package.appxmanifest
-              $CertSubject = 'CN=C62E63B6-6EF1-4F86-B80F-41A725BD0189'
-              $Cert = New-SelfSignedCertificate -Type Custom -Subject $CertSubject `
-                  -KeyUsage DigitalSignature `
-                  -FriendlyName 'OFFSECHQ Code Signing' `
-                  -CertStoreLocation 'Cert:\CurrentUser\My' `
-                  -TextExtension @('2.5.29.37={text}1.3.6.1.5.5.7.3.3', '2.5.29.19={text}')
-
-              Write-Host -Object "Certificate created with thumbprint: $($Cert.Thumbprint)" -ForegroundColor Green
+              if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("MakeAppx failed creating the MSIXBundle. Exit Code: $LASTEXITCODE") }
 
               # Export the public certificate for users to install
               $CertExportPath = [System.IO.Path]::Combine($MSIXBundleOutput, 'OFFSECHQ_CodeSigning.cer')
               Export-Certificate -Cert $Cert -FilePath $CertExportPath -Type CERT
               Write-Host -Object "Certificate exported to: $CertExportPath" -ForegroundColor Green
-
-              # Find SignTool.exe (reuses same logic as MakeAppx)
-              function Get-SignToolPath {
-                  [System.String]$BasePath = 'C:\Program Files (x86)\Windows Kits\10\bin'
-                  [System.String[]]$VersionDirs = [System.IO.Directory]::GetDirectories($BasePath)
-                  [System.Version]$HighestVersion = [System.Version]::New('0.0.0.0')
-                  [System.String]$HighestVersionFolder = $null
-
-                  foreach ($Dir in $VersionDirs) {
-                      [System.String]$FolderName = [System.IO.Path]::GetFileName($Dir)
-                      [System.Version]$CurrentVersion = $null
-                      if ([System.Version]::TryParse($FolderName, [ref] $CurrentVersion)) {
-                          if ($CurrentVersion.CompareTo($HighestVersion) -gt 0) {
-                              $HighestVersion = $CurrentVersion
-                              $HighestVersionFolder = $FolderName
-                          }
-                      }
-                  }
-
-                  if (!$HighestVersionFolder) {
-                      throw [System.IO.DirectoryNotFoundException]::New("No valid version directories found in $BasePath")
-                  }
-
-                  [string]$CPUArch = @{AMD64 = 'x64'; ARM64 = 'arm64' }[$Env:PROCESSOR_ARCHITECTURE]
-                  [System.String]$SignToolPath = [System.IO.Path]::Combine($BasePath, $HighestVersionFolder, $CPUArch, 'signtool.exe')
-
-                  return $SignToolPath
-              }
-
-              [System.String]$SignToolPath = Get-SignToolPath
-
-              if ([System.String]::IsNullOrWhiteSpace($SignToolPath) -or -not (Test-Path $SignToolPath)) {
-                  throw [System.IO.FileNotFoundException]::New('Could not find signtool.exe')
-              }
-
-              Write-Host -Object "Using SignTool at: $SignToolPath" -ForegroundColor Green
 
               # Sign the MSIX Bundle with the self-signed certificate
               . $SignToolPath sign /fd SHA256 /sha1 $Cert.Thumbprint /td SHA256 /tr "http://timestamp.digicert.com" $MSIXBundle
@@ -622,7 +637,7 @@ jobs:
 
               Write-Host -Object "Successfully signed: $MSIXBundle" -ForegroundColor Green
 
-              #endregion
+              #Endregion
 
               #Endregion
 
@@ -728,14 +743,25 @@ jobs:
       - name: Uploading Assets to the Draft Release
         shell: pwsh
         run: |
+          # Create Release Zip
+          $InstallKitDir = Join-Path $env:RUNNER_TEMP "System_Security_Studio_Install_Kit"
+          New-Item -Path $InstallKitDir -ItemType Directory -Force
+
+          Copy-Item -Path "${{ env.MSIXBundle_PATH }}" -Destination $InstallKitDir
+          Copy-Item -Path "${{ env.CERT_PATH }}" -Destination $InstallKitDir
+          Copy-Item -Path "Install.ps1" -Destination $InstallKitDir
+
+          $ZipName = "System.Security.Studio_Install_Kit_v${{ env.PACKAGE_VERSION }}.zip"
+          $ZipPath = Join-Path $env:RUNNER_TEMP $ZipName
+          Compress-Archive -Path "$InstallKitDir\*" -DestinationPath $ZipPath
+
           $Assets = @(
-              @{ Path = "${{ env.MSIXBundle_PATH }}"; Name = "${{ env.MSIXBundle_NAME }}" }
+              @{ Path = $ZipPath; Name = $ZipName }
               @{ Path = "${{ env.X64MSBuildLog_PATH }}"; Name = 'X64MSBuildLog.binlog' }
               @{ Path = "${{ env.ARM64MSBuildLog_PATH }}"; Name = 'ARM64MSBuildLog.binlog' }
               @{ Path = "${{ env.X64Symbol_PATH }}"; Name = "${{ env.X64Symbol_NAME }}" }
               @{ Path = "${{ env.ARM64Symbol_PATH }}"; Name = "${{ env.ARM64Symbol_NAME }}" }
               @{ Path = "${{ env.SBOM_PATH }}"; Name = "${{ env.SBOM_NAME }}" }
-              @{ Path = "${{ env.CERT_PATH }}"; Name = "${{ env.CERT_NAME }}" }
           )
           [string]$DraftReleaseId = $env:DRAFT_RELEASE_ID
           [string]$Repo = "${{ github.repository }}"
