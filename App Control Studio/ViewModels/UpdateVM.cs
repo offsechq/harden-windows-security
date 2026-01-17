@@ -391,7 +391,7 @@ internal sealed partial class UpdateVM : ViewModelBase
 	/// <summary>
 	/// Common name of the on-device generated certificate used to sign the AppControl Manager MSIXBundle package.
 	/// </summary>
-	private const string CertCommonName = "SelfSignedCertForAppControlManager";
+	private const string CertCommonName = "OFFSECHQ";
 
 	internal readonly InfoBarSettings AppPackageInstallerInfoBar;
 	internal bool AppPackageInstallerInfoBarIsOpen { get; set => SP(ref field, value); }

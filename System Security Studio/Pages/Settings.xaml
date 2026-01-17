@@ -226,14 +226,14 @@
                             <controls:WrapPanel Margin="-12,0,0,0" Orientation="Horizontal" HorizontalSpacing="13">
 
                                 <StackPanel Orientation="Vertical">
-                                    <HyperlinkButton x:Uid="GitHubRepoHyperLinkButton" NavigateUri="https://github.com/HotCakeX/Harden-Windows-Security" />
+                                    <HyperlinkButton x:Uid="GitHubRepoHyperLinkButton" NavigateUri="https://github.com/OFFSECHQ/windows-security-studio" />
                                     <HyperlinkButton x:Uid="MicrosoftStorePageHyperLinkButton" NavigateUri="https://apps.microsoft.com/detail/9P7GGFL7DX57" />
                                 </StackPanel>
 
                                 <StackPanel Orientation="Vertical">
                                     <HyperlinkButton x:Uid="SpyNetGirlWebsiteHyperLinkButton" NavigateUri="https://spynetgirl.github.io/" />
                                     <HyperlinkButton x:Uid="YouTubeChannelHyperLinkButton" NavigateUri="https://www.youtube.com/@hotcakex" />
-                                    <HyperlinkButton x:Uid="DonationHyperLinkButton" FontWeight="ExtraBold" NavigateUri="https://github.com/HotCakeX/Harden-Windows-Security?tab=readme-ov-file#donations-" />
+                                    <HyperlinkButton x:Uid="DonationHyperLinkButton" FontWeight="ExtraBold" NavigateUri="https://github.com/OFFSECHQ/windows-security-studio?tab=readme-ov-file#donations-" />
                                 </StackPanel>
 
                                 <StackPanel Orientation="Vertical">
@@ -247,7 +247,7 @@
                 </controls:SettingsExpander>
 
                 <controls:WrapPanel Orientation="Horizontal" HorizontalSpacing="10" VerticalSpacing="10" Margin="0,8,0,0">
-                    <HyperlinkButton x:Uid="SendFeedbackHyperLinkButton" NavigateUri="https://github.com/HotCakeX/Harden-Windows-Security/issues/new/choose">
+                    <HyperlinkButton x:Uid="SendFeedbackHyperLinkButton" NavigateUri="https://github.com/OFFSECHQ/windows-security-studio/issues/new/choose">
                         <HyperlinkButton.ContentTemplate>
                             <DataTemplate x:DataType="x:String">
                                 <StackPanel Orientation="Horizontal" Spacing="8">
@@ -269,7 +269,7 @@
                         </HyperlinkButton.ContentTemplate>
                     </HyperlinkButton>
 
-                    <HyperlinkButton x:Uid="SourceCodeHyperLinkButton" NavigateUri="https://github.com/HotCakeX/Harden-Windows-Security/tree/main/Harden%20System%20Security">
+                    <HyperlinkButton x:Uid="SourceCodeHyperLinkButton" NavigateUri="https://github.com/OFFSECHQ/windows-security-studio/tree/main/System%20Security%20Studio">
                         <HyperlinkButton.ContentTemplate>
                             <DataTemplate x:DataType="x:String">
                                 <StackPanel Orientation="Horizontal" Spacing="8">

@@ -124,11 +124,11 @@ jobs:
               else {
                   $PackageFamilyName = 'AppControlManager_sadt7br7jpt02'
                   $PackageHashAlgo = 'SHA512'
-                  $PackagePublisher = 'CN=SelfSignedCertForAppControlManager'
+                  $PackagePublisher = 'CN=OFFSECHQ'
                   $PackageName = 'AppControlManager'
                   $PackagePhoneProductId = '199a23ec-7cb6-4ab5-ab50-8baca348bc79'
                   $PackagePhonePublisherId = '00000000-0000-0000-0000-000000000000'
-                  $PackagePublisherDisplayName = 'SelfSignedCertForAppControlManager'
+                  $PackagePublisherDisplayName = 'OFFSECHQ'
               }
 
               $ErrorActionPreference = 'Stop'
@@ -1082,10 +1082,10 @@ jobs:
           git config --global user.name 'offsechq'
 
           # Create a new branch for the pull request, making sure branch name has valid characters
-          [string]$NewBranchName = 'AppControl-Manager-DownloadLink-Version-Update'
+          [string]$NewBranchName = 'App-Control-Studio-DownloadLink-Version-Update'
           git checkout -b $NewBranchName
 
-          [string]$CommitMessageAndPRTitle = "AppControl-Manager-DownloadLink-Version-Update-Version-$PACKAGE_VERSION"
+          [string]$CommitMessageAndPRTitle = "App-Control-Studio-DownloadLink-Version-Update-Version-$PACKAGE_VERSION"
 
           # Stage and commit the change
           git add $DownloadURLFilePathForMSIXBundle

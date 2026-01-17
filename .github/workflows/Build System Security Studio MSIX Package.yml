@@ -925,10 +925,10 @@ jobs:
           git config --global user.name 'offsechq'
 
           # Create a new branch for the pull request, making sure branch name has valid characters
-          [string]$NewBranchName = 'Harden-System-Security-DownloadLink-Version-Update'
+          [string]$NewBranchName = 'System-Security-Studio-DownloadLink-Version-Update'
           git checkout -b $NewBranchName
 
-          [string]$CommitMessageAndPRTitle = "Harden-System-Security-DownloadLink-Version-Update-Version-$PACKAGE_VERSION"
+          [string]$CommitMessageAndPRTitle = "System-Security-Studio-DownloadLink-Version-Update-Version-$PACKAGE_VERSION"
 
           # Stage and commit the change
           git add $DownloadURLFilePathForMSIXBundle

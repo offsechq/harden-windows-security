@@ -153,7 +153,7 @@
                 Orientation="Horizontal"
                 Spacing="-48">
                 <local:HeaderTile
-                    Description="Thanks for choosing the AppControl Manager"
+                    Description="Thanks for choosing App Control Studio"
                     Foreground="{StaticResource DarkTextGradient}"
                     Header="Welcome"
                     ImageUrl="ms-appx:///Assets/TileImages/1-Welcome.jpg"
@@ -222,7 +222,7 @@
                        FontSize="40"
                        FontWeight="Bold"
                        Opacity="0.8"
-                       Text="AppControl Manager"
+                       Text="App Control Studio"
                        TextAlignment="Center"
                        TextWrapping="Wrap">
                     <TextBlock.Foreground>
@@ -247,7 +247,7 @@
                            CharacterSpacing="48"
                            FontSize="40"
                            FontWeight="Bold"
-                           Text="AppControl Manager"
+                           Text="App Control Studio"
                            TextAlignment="Center"
                            TextWrapping="Wrap"
                            Foreground="#6000FFFF"
@@ -263,7 +263,7 @@
                            CharacterSpacing="48"
                            FontSize="40"
                            FontWeight="Bold"
-                           Text="AppControl Manager"
+                           Text="App Control Studio"
                            TextAlignment="Center"
                            TextWrapping="Wrap"
                            Foreground="#60FF00FF"
@@ -285,7 +285,7 @@
                            TextAlignment="Center"
                            TextWrapping="Wrap">
                     <Run Text="Create Self-Sufficient and Independent Allow Listing Strategy For Your Systems." />
-                    <Hyperlink NavigateUri="https://github.com/HotCakeX/Harden-Windows-Security/wiki/WDAC-policy-for-BYOVD-Kernel-mode-only-protection">Learn More</Hyperlink>
+                    <Hyperlink NavigateUri="https://github.com/OFFSECHQ/windows-security-studio/wiki/WDAC-policy-for-BYOVD-Kernel-mode-only-protection">Learn More</Hyperlink>
                 </TextBlock>
             </Grid>
         </StackPanel>

@@ -36,11 +36,21 @@ internal static partial class GlobalVars
 		Environment.GetEnvironmentVariable("SystemDrive") + @"\",
 		"Windows", "schemas", "CodeIntegrity", "cipolicy.xsd");
 
-	// The link to the file that contains the download link for the latest version of the AppControl Manager
-	internal static readonly Uri AppUpdateDownloadLinkURL = new("https://raw.githubusercontent.com/HotCakeX/Harden-Windows-Security/refs/heads/main/AppControl%20Manager/MSIXBundleDownloadURL.txt");
+	// The link to the file that contains the download link for the latest version of the app
+#if HARDEN_SYSTEM_SECURITY
+	internal static readonly Uri AppUpdateDownloadLinkURL = new("https://raw.githubusercontent.com/OFFSECHQ/windows-security-studio/refs/heads/main/System%20Security%20Studio/MSIXBundleDownloadURL.txt");
+#endif
+#if APP_CONTROL_MANAGER
+	internal static readonly Uri AppUpdateDownloadLinkURL = new("https://raw.githubusercontent.com/OFFSECHQ/windows-security-studio/refs/heads/main/App%20Control%20Studio/MSIXBundleDownloadURL.txt");
+#endif
 
 	// The link to the file that contains the version number of the latest available version of the app
-	internal static readonly Uri AppVersionLinkURL = new("https://raw.githubusercontent.com/HotCakeX/Harden-Windows-Security/refs/heads/main/AppControl%20Manager/version.txt");
+#if HARDEN_SYSTEM_SECURITY
+	internal static readonly Uri AppVersionLinkURL = new("https://raw.githubusercontent.com/OFFSECHQ/windows-security-studio/refs/heads/main/System%20Security%20Studio/version.txt");
+#endif
+#if APP_CONTROL_MANAGER
+	internal static readonly Uri AppVersionLinkURL = new("https://raw.githubusercontent.com/OFFSECHQ/windows-security-studio/refs/heads/main/App%20Control%20Studio/version.txt");
+#endif
 
 	// Product ID of the application when installed from the Microsoft Store
 #if HARDEN_SYSTEM_SECURITY

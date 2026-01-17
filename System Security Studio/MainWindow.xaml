@@ -445,7 +445,7 @@
                                     <HyperlinkButton x:Name="SidebarHelpHyperlinkButton"
                                                      HorizontalAlignment="Center"
                                                      HorizontalContentAlignment="Stretch"
-                                                     NavigateUri="https://github.com/HotCakeX/Harden-Windows-Security/discussions"
+                                                     NavigateUri="https://github.com/OFFSECHQ/windows-security-studio/discussions"
                                                      Padding="12,8"
                                                      CornerRadius="6"
                                                      Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
@@ -474,7 +474,7 @@
 
                                     <HyperlinkButton Content="AppControl Manager"
                                                      HorizontalAlignment="Center"
-                                                     NavigateUri="https://github.com/HotCakeX/Harden-Windows-Security/wiki/AppControl-Manager"
+                                                     NavigateUri="https://github.com/OFFSECHQ/windows-security-studio/wiki/AppControl-Manager"
                                                      Padding="12,8"
                                                      CornerRadius="6"
                                                      Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"

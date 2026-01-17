@@ -285,7 +285,7 @@
                            TextAlignment="Center"
                            TextWrapping="Wrap">
                     <Run Text="Harden Windows Safely, Securely, Only With Official Microsoft" />
-                    <Hyperlink NavigateUri="https://github.com/HotCakeX/Harden-Windows-Security/wiki">Methods</Hyperlink><Run Text="." />
+                    <Hyperlink NavigateUri="https://github.com/OFFSECHQ/windows-security-studio/wiki">Methods</Hyperlink><Run Text="." />
                 </TextBlock>
             </Grid>
         </StackPanel>

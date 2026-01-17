@@ -10,7 +10,7 @@
     xmlns:AnimatedVisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
     xmlns:animatedvisuals="using:AnimatedVisuals"
     SystemBackdrop="{x:Bind ViewModel.SystemBackDropStyle, Mode=OneWay}"
-    Title="AppControl Manager">
+    Title="App Control Studio">
 
     <Grid x:Name="RootGrid" FlowDirection="{x:Bind ViewModel.AppSettings.ApplicationGlobalFlowDirection, Mode=OneWay}">
 
@@ -376,7 +376,7 @@
                                     <HyperlinkButton x:Name="SidebarGuideHyperlinkButton"
                                                      x:Uid="SidebarGuideHyperlinkButton"
                                                      HorizontalAlignment="Center"
-                                                     NavigateUri="https://github.com/HotCakeX/Harden-Windows-Security/wiki/Sidebar"
+                                                     NavigateUri="https://github.com/OFFSECHQ/windows-security-studio/wiki/Sidebar"
                                                      Padding="12,8"
                                                      CornerRadius="6"
                                                      Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
@@ -385,7 +385,7 @@
 
                                     <HyperlinkButton x:Name="SidebarHelpHyperlinkButton"
                                                       HorizontalAlignment="Center"
-                                                      NavigateUri="https://github.com/HotCakeX/Harden-Windows-Security/discussions"
+                                                      NavigateUri="https://github.com/OFFSECHQ/windows-security-studio/discussions"
                                                       Padding="12,8"
                                                       CornerRadius="6"
                                                       Background="{ThemeResource CardBackgroundFillColorDefaultBrush}"
