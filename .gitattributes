@@ -26,13 +26,9 @@ LICENSE merge=ours
 Harden-Windows-Security.ps1 merge=ours
 .gitattributes merge=ours
 
-# Protect app manifests (display names, publisher)
-"Harden System Security/Package.appxmanifest" merge=ours
-"AppControl Manager/Package.appxmanifest" merge=ours
-
-# Protect project files (titles, URLs, branding)
-"Harden System Security/Harden System Security.csproj" merge=ours
-"AppControl Manager/AppControl Manager.csproj" merge=ours
+# Protect rebranded app directories (prevent upstream from overwriting)
+"System Security Studio/**" merge=ours
+"App Control Studio/**" merge=ours
 
 # Protect custom workflows
 ".github/workflows/sync-upstream.yml" merge=ours

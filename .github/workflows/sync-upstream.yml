@@ -2,8 +2,8 @@ name: Sync Fork with Upstream
 
 on:
   schedule:
-    # Runs every day at midnight UTC
-    - cron: "0 0 * * *"
+    # Runs every week on Monday at midnight UTC
+    - cron: "0 0 * * 1"
   workflow_dispatch: # Allows manual trigger
 
 jobs:
@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -18,12 +19,62 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Sync upstream changes
+      - name: Configure Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git remote add upstream https://github.com/HotCakeX/Harden-Windows-Security.git
+
+      - name: Fetch upstream changes
+        run: |
+          git remote add upstream https://github.com/HotCakeX/Harden-Windows-Security.git || true
           git fetch upstream
-          git checkout main
-          git merge upstream/main --no-edit
-          git push origin main
+
+      - name: Check for new commits
+        id: check
+        run: |
+          # Count how many commits are in upstream but not in our main
+          COMMITS_BEHIND=$(git rev-list --count main..upstream/main)
+          echo "commits_behind=$COMMITS_BEHIND" >> $GITHUB_OUTPUT
+          echo "Upstream has $COMMITS_BEHIND new commits"
+
+      - name: Create sync branch and PR
+        if: steps.check.outputs.commits_behind != '0'
+        run: |
+          # Create a branch for the sync
+          SYNC_BRANCH="sync-upstream-$(date +%Y%m%d)"
+          git checkout -b $SYNC_BRANCH
+
+          # Attempt the merge (may have conflicts)
+          if git merge upstream/main --no-edit; then
+            echo "Merge successful, pushing branch..."
+            git push origin $SYNC_BRANCH
+
+            # Create PR using GitHub CLI
+            gh pr create \
+              --title "🔄 Sync with upstream ($(date +%Y-%m-%d))" \
+              --body "This PR syncs changes from the upstream repository.
+
+          ## ⚠️ Review Required
+
+          Please review the following before merging:
+          - Check if any changes conflict with our rebranding (App Control Studio / System Security Studio)
+          - Verify no files were added to old directory names (AppControl Manager / Harden System Security)
+          - Review any changes to shared components in eXclude/
+
+          **Upstream commits included:** ${{ steps.check.outputs.commits_behind }}
+
+          ---
+          *This PR was automatically created by the sync workflow.*" \
+              --base main \
+              --head $SYNC_BRANCH
+          else
+            echo "::warning::Merge conflicts detected. Manual intervention required."
+            echo "You may need to cherry-pick specific commits from upstream."
+            exit 1
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: No changes
+        if: steps.check.outputs.commits_behind == '0'
+        run: echo "Already up to date with upstream!"
