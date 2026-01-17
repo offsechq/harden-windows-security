@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<!-- https://github.com/microsoft/CsWinRT/blob/master/nuget/Microsoft.Windows.CsWinRT.targets -->
 
-    <!-- Import the build props from the AppControl Manager's directory -->
+    <!-- Import the build props from the App Control Studio's directory -->
     <PropertyGroup>
         <!-- https://learn.microsoft.com/visualstudio/msbuild/customize-by-directory -->
         <DirectoryBuildPropsPath>..\App Control Studio\Directory.Build.props</DirectoryBuildPropsPath>

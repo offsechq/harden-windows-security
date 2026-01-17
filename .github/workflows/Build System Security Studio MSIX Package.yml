@@ -35,7 +35,7 @@ jobs:
       - name: Check out the repository code
         uses: actions/checkout@v6
 
-      - name: Building And Packaging the Harden System Security
+      - name: Building And Packaging the System Security Studio
         id: main_buildOp
         shell: pwsh
         working-directory: "./System Security Studio"
@@ -394,11 +394,11 @@ jobs:
               dotnet clean 'System Security Studio.csproj' --configuration Release
               dotnet build 'System Security Studio.csproj' --configuration Release --verbosity minimal /p:Platform=x64 /p:RuntimeIdentifier=win-x64
 
-              if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("Failed building x64 Harden System Security project. Exit Code: $LASTEXITCODE") }
+              if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("Failed building x64 System Security Studio project. Exit Code: $LASTEXITCODE") }
 
               dotnet msbuild 'System Security Studio.csproj' /t:Publish /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:AppxPackageDir="MSIXOutputX64\" /p:GenerateAppxPackageOnBuild=true /p:Platform=x64 -v:minimal /p:MsPdbCmfExeFullpath=$mspdbcmfPath -bl:X64MSBuildLog.binlog
 
-              if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("Failed packaging x64 Harden System Security project. Exit Code: $LASTEXITCODE") }
+              if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("Failed packaging x64 System Security Studio project. Exit Code: $LASTEXITCODE") }
 
               # Copy the ARM64 components to the directory before the build starts
 
@@ -412,11 +412,11 @@ jobs:
               dotnet clean 'System Security Studio.csproj' --configuration Release
               dotnet build 'System Security Studio.csproj' --configuration Release --verbosity minimal /p:Platform=ARM64 /p:RuntimeIdentifier=win-arm64
 
-              if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("Failed building ARM64 Harden System Security project. Exit Code: $LASTEXITCODE") }
+              if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("Failed building ARM64 System Security Studio project. Exit Code: $LASTEXITCODE") }
 
               dotnet msbuild 'System Security Studio.csproj' /t:Publish /p:Configuration=Release /p:RuntimeIdentifier=win-arm64 /p:AppxPackageDir="MSIXOutputARM64\" /p:GenerateAppxPackageOnBuild=true /p:Platform=ARM64 -v:minimal /p:MsPdbCmfExeFullpath=$mspdbcmfPath -bl:ARM64MSBuildLog.binlog
 
-              if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("Failed packaging ARM64 Harden System Security project. Exit Code: $LASTEXITCODE") }
+              if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("Failed packaging ARM64 System Security Studio project. Exit Code: $LASTEXITCODE") }
 
               function Get-MSIXFile {
                   param(
@@ -796,7 +796,7 @@ jobs:
           [string]$MSIXBundleName = "${{ needs.build.outputs.MSIXBundle_NAME }}"
 
           # Spaces in files added to the GitHub assets will be replaced with dots, so we need to do the same when constructing the download link
-          [string]$AdjustedMSIXBundleName = $MSIXBundleName.Replace('Harden System Security', 'Harden.System.Security')
+          [string]$AdjustedMSIXBundleName = $MSIXBundleName.Replace('System Security Studio', 'System.Security.Studio')
 
           [string]$DRAFT_RELEASE_TAG = "${{ needs.build.outputs.DRAFT_RELEASE_TAG }}"
           [string]$GitHubRepository = "${{ github.repository }}"
@@ -806,8 +806,8 @@ jobs:
           [string]$DownloadURLForMSIXBundle = "https://github.com/$GitHubRepository/releases/download/$DRAFT_RELEASE_TAG/$AdjustedMSIXBundleName"
 
           # Path to the files that will be updated
-          [string]$DownloadURLFilePathForMSIXBundle = '.\Harden System Security\MSIXBundleDownloadURL.txt'
-          [string]$VersionFilePath = '.\Harden System Security\version.txt'
+          [string]$DownloadURLFilePathForMSIXBundle = '.\System Security Studio\MSIXBundleDownloadURL.txt'
+          [string]$VersionFilePath = '.\System Security Studio\version.txt'
 
           Set-Content -Path $DownloadURLFilePathForMSIXBundle -Value $DownloadURLForMSIXBundle -Force
           Write-Host -Object "Updated MSIXBundleDownloadURL.txt with download URL: $DownloadURLForMSIXBundle"
@@ -857,7 +857,7 @@ jobs:
 
           [string]$Note = @"
 
-          # Harden System Security
+          # System Security Studio
 
           A Windows application for system security hardening.
 

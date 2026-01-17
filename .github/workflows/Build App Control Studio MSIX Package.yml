@@ -75,7 +75,7 @@ jobs:
       - name: Check out the repository code
         uses: actions/checkout@v6
 
-      - name: Building And Packaging the AppControl Manager
+      - name: Building And Packaging the App Control Studio
         id: main_buildOp
         shell: pwsh
         env:
@@ -494,11 +494,11 @@ jobs:
               dotnet clean 'App Control Studio.csproj' --configuration Release
               dotnet build 'App Control Studio.csproj' --configuration Release --verbosity minimal /p:Platform=x64 /p:RuntimeIdentifier=win-x64
 
-              if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("Failed building x64 AppControl Manager project. Exit Code: $LASTEXITCODE") }
+              if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("Failed building x64 App Control Studio project. Exit Code: $LASTEXITCODE") }
 
               dotnet msbuild 'App Control Studio.csproj' /t:Publish /p:Configuration=Release /p:RuntimeIdentifier=win-x64 /p:AppxPackageDir="MSIXOutputX64\" /p:GenerateAppxPackageOnBuild=true /p:Platform=x64 -v:minimal /p:MsPdbCmfExeFullpath=$mspdbcmfPath -bl:X64MSBuildLog.binlog
 
-              if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("Failed packaging x64 AppControl Manager project. Exit Code: $LASTEXITCODE") }
+              if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("Failed packaging x64 App Control Studio project. Exit Code: $LASTEXITCODE") }
 
               if (!$X64ONLY) {
 
@@ -511,11 +511,11 @@ jobs:
                   dotnet clean 'App Control Studio.csproj' --configuration Release
                   dotnet build 'App Control Studio.csproj' --configuration Release --verbosity minimal /p:Platform=ARM64 /p:RuntimeIdentifier=win-arm64
 
-                  if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("Failed building ARM64 AppControl Manager project. Exit Code: $LASTEXITCODE") }
+                  if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("Failed building ARM64 App Control Studio project. Exit Code: $LASTEXITCODE") }
 
                   dotnet msbuild 'App Control Studio.csproj' /t:Publish /p:Configuration=Release /p:RuntimeIdentifier=win-arm64 /p:AppxPackageDir="MSIXOutputARM64\" /p:GenerateAppxPackageOnBuild=true /p:Platform=ARM64 -v:minimal /p:MsPdbCmfExeFullpath=$mspdbcmfPath -bl:ARM64MSBuildLog.binlog
 
-                  if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("Failed packaging ARM64 AppControl Manager project. Exit Code: $LASTEXITCODE") }
+                  if ($LASTEXITCODE -ne 0) { throw [System.InvalidOperationException]::New("Failed packaging ARM64 App Control Studio project. Exit Code: $LASTEXITCODE") }
               }
 
               function Get-MSIXFile {
@@ -955,7 +955,7 @@ jobs:
           [string]$MSIXBundleName = "${{ needs.build.outputs.MSIXBundle_NAME }}"
 
           # Spaces in files added to the GitHub assets will be replaced with dots, so we need to do the same when constructing the download link
-          [string]$AdjustedMSIXBundleName = $MSIXBundleName.Replace('AppControl Manager', 'AppControl.Manager')
+          [string]$AdjustedMSIXBundleName = $MSIXBundleName.Replace('App Control Studio', 'App.Control.Studio')
 
           [string]$DRAFT_RELEASE_TAG = "${{ needs.build.outputs.DRAFT_RELEASE_TAG }}"
           [string]$GitHubRepository = "${{ github.repository }}"
@@ -965,8 +965,8 @@ jobs:
           [string]$DownloadURLForMSIXBundle = "https://github.com/$GitHubRepository/releases/download/$DRAFT_RELEASE_TAG/$AdjustedMSIXBundleName"
 
           # Path to the files that will be updated
-          [string]$DownloadURLFilePathForMSIXBundle = '.\AppControl Manager\MSIXBundleDownloadURL.txt'
-          [string]$VersionFilePath = '.\AppControl Manager\version.txt'
+          [string]$DownloadURLFilePathForMSIXBundle = '.\App Control Studio\MSIXBundleDownloadURL.txt'
+          [string]$VersionFilePath = '.\App Control Studio\version.txt'
 
           Set-Content -Path $DownloadURLFilePathForMSIXBundle -Value $DownloadURLForMSIXBundle -Force
           Write-Host -Object "Updated MSIXBundleDownloadURL.txt with download URL: $DownloadURLForMSIXBundle"
@@ -1018,7 +1018,7 @@ jobs:
           # Installation
 
           <a href="https://apps.microsoft.com/detail/9png1jddtgp8?mode=direct">
-          	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="300" alt="install AppControl Manager from Microsoft Store"/>
+          	<img src="https://get.microsoft.com/images/en-us%20dark.svg" width="300" alt="install App Control Studio from Microsoft Store"/>
           </a>
 
           **Install it from the Microsoft Store: https://apps.microsoft.com/detail/9png1jddtgp8**
